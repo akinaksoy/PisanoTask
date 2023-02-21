@@ -60,7 +60,7 @@ class ProductListCollectionViewCell: UICollectionViewCell {
     
     func setDatas(imageUrl : String, productName : String, productPrice: String) {
         productNameLabel.text = productName
-        productPriceLabel.text = "\(productPrice) $"
+        productPriceLabel.text = "\(productPrice) $ / KG"
         productImage.setImage(imageUrl: imageUrl)
     }
     

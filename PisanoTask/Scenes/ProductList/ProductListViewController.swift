@@ -62,7 +62,7 @@ extension ProductListViewController : ProductListPageDisplayLogic {
     
 }
 
-extension ProductListViewController : UICollectionViewDelegate, UICollectionViewDataSource {
+extension ProductListViewController : UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return viewModel?.productList?.products.count ?? 0
     }
@@ -73,7 +73,14 @@ extension ProductListViewController : UICollectionViewDelegate, UICollectionView
         cell.setDatas(imageUrl: product.image, productName: product.name, productPrice: String(product.price))
         return cell
     }
-    
-    
+}
+
+extension ProductListViewController : UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let destinationVC = ProductDetailViewController()
+        guard let product = viewModel?.productList?.products[indexPath.row] else {return}
+        destinationVC.configureProductDatas(model: product)
+        navigationController?.pushViewController(destinationVC, animated: true)
+    }
 }
 

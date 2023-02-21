@@ -16,6 +16,9 @@ class BaseViewController: UIViewController {
     
     func configure(title : String) {
         self.title = title
+        let textAttributes = [NSAttributedString.Key.foregroundColor:UIColor.setColor(.alternativeColor)]
+        navigationController?.navigationBar.titleTextAttributes = textAttributes
+        navigationController?.navigationBar.tintColor = .white
         navigationController?.navigationBar.backgroundColor = UIColor.setColor(.navigationBarColor)
         view.backgroundColor = UIColor.setColor(.backgroundColor) 
     }
