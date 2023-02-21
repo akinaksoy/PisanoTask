@@ -13,13 +13,14 @@ class ProductListViewModel {
     
     init(viewController : ProductListViewController) {
         self.viewController = viewController
+        fetchProductList()
     }
     
     internal func fetchProductList() {
         ProductListManager.responseService(type: .list, method: .get) { products, error in
             if let products = products {
                 self.productList = products
-                // Set Design Func
+                self.viewController?.displayProductList()
             } else if let error = error {
                 // Show Error Popup
             }
