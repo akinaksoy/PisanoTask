@@ -13,8 +13,9 @@
 - Snapkit (Programmatically Design)
 - SPM
 - Alamofire
-- MVVM
 - KingFisher
+- Network
+- MVVM
 
 ## Demo
 https://user-images.githubusercontent.com/48281659/220696997-2010c5c6-002e-48c6-b711-deee1facb7c6.mov
