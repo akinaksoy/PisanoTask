@@ -13,11 +13,12 @@ class ProductListCollectionViewCell: UICollectionViewCell {
     
     
     static let cellIdentifier = "ProductListCollectionViewCell"
-    
+    // MARK: - UI Outlet
     var productImage = UIImageView.setImageView
     let productNameLabel = UILabel(text: "", fontSize: 16, fontColor: .textColor, fontTypes: .deffault)
     let productPriceLabel = UILabel(text: "", fontSize: 12, fontColor: .textColor, fontTypes: .bold)
     var loadingIndicator : LoadingView?
+    // MARK: - Init
     override init(frame : CGRect){
         super.init(frame: frame)
         configure()
@@ -29,7 +30,7 @@ class ProductListCollectionViewCell: UICollectionViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
     }
-    
+    // MARK: - UI Configuration
     func setDesignCell() {
         self.backgroundColor = UIColor.setColor(.cellColor)
         self.layer.cornerRadius = 10

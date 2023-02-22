@@ -10,7 +10,11 @@ import UIKit
 class EmptyView: UIView {
 
     let warningLabel = UILabel(text: RequestError.ErrorTypes.SomethingWentWrong.rawValue, fontSize: 16, fontColor: .textColor, fontTypes: .bold)
-    let tryAgainButton = ButtonView()
+    let tryAgainButton : ButtonView = {
+       let button = ButtonView()
+        button.configure(buttonText: Constants.tryAgain,icon: "wifi",type: .ButtonWithText)
+       return button
+    }()
     
     override init(frame: CGRect) {
         super.init(frame: .zero)
@@ -23,6 +27,7 @@ class EmptyView: UIView {
         tryAgainButton.snp.makeConstraints { make in
             make.top.equalTo(warningLabel.snp_bottomMargin).offset(24)
             make.centerX.equalToSuperview()
+            make.width.equalToSuperview().multipliedBy(0.8)
         }
         
     }

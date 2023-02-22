@@ -26,7 +26,7 @@ protocol ProductListPageUserInteractions{
 }
 
 class ProductListViewController: BaseViewController {
-
+    // MARK: - UI Outlets
     private lazy var productCollectionView : UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(width: view.bounds.width*0.48, height: view.bounds.height/5)
@@ -40,39 +40,48 @@ class ProductListViewController: BaseViewController {
     }()
     var loadingView : LoadingView?
     var emptyView : EmptyView?
+    // MARK: - Public Properties
     var viewModel : ProductListViewModel?
     
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewModel = ProductListViewModel(viewController: self)
         displayLoadingView()
+        viewModel = ProductListViewModel(viewController: self)
+        
         
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        
+        configure(title: Constants.products)
+        viewModel?.checkProductList()
+    }
+    
+    // MARK: - UI Configuration
     override func configure(title: String) {
         super.configure(title: title)
-        
-        view.addSubview(productCollectionView)
-        
-        productCollectionView.snp.makeConstraints { make in
-            make.edges.equalTo(view.safeAreaLayoutGuide)
-        }
     }
     
 }
-
+// MARK: - Display Logic
 extension ProductListViewController : ProductListPageDisplayLogic {
     
     func displayProductList() {
         removeCollectionView()
         removeEmptyView()
-        configure(title: "Products")
+        view.addSubview(productCollectionView)
+        
+        productCollectionView.snp.makeConstraints { make in
+            make.edges.equalTo(view.safeAreaLayoutGuide)
+        }
         productCollectionView.reloadData()
         removeLoadingView()
     }
     
     func displayEmptyView() {
         removeCollectionView()
+        removeEmptyView()
         emptyView = EmptyView()
         emptyView?.tryAgainButton.didTapButton = {
             self.didTappedTryAgainButton()
@@ -82,13 +91,15 @@ extension ProductListViewController : ProductListPageDisplayLogic {
         emptyView.snp.makeConstraints { make in
             make.edges.equalTo(view.safeAreaLayoutGuide)
         }
+        removeLoadingView()
     }
     
     func displayErrorMessage(errorMessage : String) {
-        let alert = UIAlertController(title: "Connection Problem", message: errorMessage, preferredStyle: UIAlertController.Style.alert)
-        alert.addAction(UIAlertAction(title: "Click", style: UIAlertAction.Style.default, handler: nil))
+        let alert = UIAlertController(title: Constants.connectionProblem, message: errorMessage, preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: Constants.ok, style: UIAlertAction.Style.default, handler: nil))
         self.present(alert, animated: true, completion: nil)
         displayEmptyView()
+        removeLoadingView()
     }
     
     func displayLoadingView() {
@@ -112,7 +123,7 @@ extension ProductListViewController : ProductListPageDisplayLogic {
         loadingView = nil
     }
 }
-
+// MARK: - Product Collection List
 extension ProductListViewController : UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return viewModel?.productList?.products.count ?? 0
@@ -125,13 +136,13 @@ extension ProductListViewController : UICollectionViewDataSource {
         return cell
     }
 }
-
+// MARK: - CollectionViewDelegate
 extension ProductListViewController : UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         viewModel?.fetchProduct(index: indexPath.row)
     }
 }
-
+// MARK: - Router Logic
 extension ProductListViewController : ProductListPageRouterLogic {
     func navigateToProductDetailPage(model: Product) {
         let destinationVC = ProductDetailViewController()
@@ -139,7 +150,7 @@ extension ProductListViewController : ProductListPageRouterLogic {
         navigationController?.pushViewController(destinationVC, animated: true)
     }
 }
-
+// MARK: - User Actions
 extension ProductListViewController : ProductListPageUserInteractions {
     func didTappedTryAgainButton() {
         viewModel?.fetchProductList()

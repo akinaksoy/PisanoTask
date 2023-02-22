@@ -19,7 +19,8 @@ class ApiService {
                    parameters: nil,
                    encoding: encoding,
                    headers: nil,
-                   interceptor: nil).response { (responseData) in
+                   interceptor: nil) {$0.timeoutInterval = 2}
+            .response { (responseData) in
             
             completion(responseData)
         }

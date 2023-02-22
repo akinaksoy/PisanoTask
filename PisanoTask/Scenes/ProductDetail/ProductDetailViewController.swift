@@ -28,7 +28,7 @@ protocol ProductDetailUserInteractions{
 
 class ProductDetailViewController: BaseViewController {
 
-    
+    // MARK: - UI Outlets
     var productImage = UIImageView.setImageView
     let productNameLabel = UILabel(text: "", fontSize: 24, fontColor: .textColor, fontTypes: .bold)
     let lineView = UIView.setLineView
@@ -55,8 +55,10 @@ class ProductDetailViewController: BaseViewController {
     }()
     var loadingView : LoadingView?
     
+    // MARK: - Public Properties
     var viewModel : ProductDetailViewModel?
     
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -70,7 +72,7 @@ class ProductDetailViewController: BaseViewController {
     override func viewDidDisappear(_ animated: Bool) {
         closePage()
     }
-    
+    // MARK: - UI Configuration
     override func configure(title: String) {
         super.configure(title: title)
         
@@ -120,8 +122,9 @@ class ProductDetailViewController: BaseViewController {
     }
     
 }
-
+// MARK: - User Actions
 extension ProductDetailViewController : ProductDetailUserInteractions {
+    
     func didTappedMinusButton() {
         viewModel?.decraseKilogram()
         updateViews()
@@ -134,14 +137,14 @@ extension ProductDetailViewController : ProductDetailUserInteractions {
     
     func didTappedAddToCartButton() {
         guard let selectedKilogram = viewModel?.selectedKilogram,let totalPrice = viewModel?.totalPrice,let productName = viewModel?.product?.name else {return}
-        let alert = UIAlertController(title: "Success", message: "You bought \(selectedKilogram) kilograms of \(productName) for $\(totalPrice)", preferredStyle: UIAlertController.Style.alert)
-        alert.addAction(UIAlertAction(title: "Click", style: UIAlertAction.Style.default, handler: nil))
+        let alert = UIAlertController(title: Constants.success, message: "You bought \(selectedKilogram) kilograms of \(productName) for $\(totalPrice)", preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: Constants.ok, style: UIAlertAction.Style.default, handler: nil))
         self.present(alert, animated: true, completion: nil)
     }
     
     
 }
-
+// MARK: - Data Storage
 extension ProductDetailViewController : ProductDetailDataStorageLogic {
     func configureProductDatas(model: Product) {
         viewModel = ProductDetailViewModel(viewController: self)
@@ -149,14 +152,14 @@ extension ProductDetailViewController : ProductDetailDataStorageLogic {
         viewModel?.setProductModel(product: model)
     }
 }
-
+// MARK: - Display Logic
 extension ProductDetailViewController : ProductDetailDisplayLogic {
     
     func displayPage(model: Product?) {
         guard let model = model else {return}
         viewModel?.fetchImage(imageId: model.productID, imageURL: model.image)
         productNameLabel.text = model.name
-        priceValueLabel.text = "Price : \(model.price) $ /KG"
+        priceValueLabel.text = "\(Constants.price) \(model.price) \(Constants.priceKilogramSymbol)"
         addCartView.configureDatas(totalKilogram: "1", totalPrice: "\(model.price)")
     }
     func displayImage(image: UIImage) {

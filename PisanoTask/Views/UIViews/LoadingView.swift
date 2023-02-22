@@ -9,13 +9,13 @@ import Foundation
 import UIKit
 
 class LoadingView : UIView {
-    
+    // MARK: - UI Outlet
     let indicatorView : UIActivityIndicatorView = {
         let view = UIActivityIndicatorView(style: .large)
         view.backgroundColor = .clear
         return view
     }()
-    
+    // MARK: - Init
     override init(frame: CGRect) {
         super.init(frame: .zero)
         

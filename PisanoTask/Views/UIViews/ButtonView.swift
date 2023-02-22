@@ -14,7 +14,7 @@ enum ButtonType {
 
 
 class ButtonView: UIView {
-
+    // MARK: - UI Outlets
     let buttonIcon : UIImageView = {
         let icon = UIImageView()
         icon.contentMode = .scaleAspectFit
@@ -23,7 +23,7 @@ class ButtonView: UIView {
         return icon
     }()
     
-    var buttonLabel = UILabel(text: "Add to Cart", fontSize: 16, fontColor: .alternativeColor, fontTypes: .bold)
+    var buttonLabel = UILabel(text: Constants.addToCart, fontSize: 16, fontColor: .alternativeColor, fontTypes: .bold)
     
     lazy var button : UIButton = {
        let button = UIButton()
@@ -34,7 +34,7 @@ class ButtonView: UIView {
     }()
     
     var didTapButton: (() -> Void)?
-    
+    // MARK: - Init
     override init(frame: CGRect) {
         super.init(frame: .zero)
         self.addSubview(button)
@@ -56,7 +56,7 @@ class ButtonView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+    // MARK: - UI Configuration
     internal func configure(buttonText : String,icon : String,type : ButtonType) {
         buttonLabel.text = buttonText
         buttonIcon.image = UIImage(systemName: icon)
@@ -70,6 +70,7 @@ class ButtonView: UIView {
             buttonLabel.snp.makeConstraints { make in
                 make.centerY.equalToSuperview()
                 make.left.equalTo(buttonIcon.snp_rightMargin).offset(16)
+                make.right.equalToSuperview().inset(8)
             }
         case .ButtonWithoutText:
             buttonLabel.removeFromSuperview()
@@ -82,7 +83,7 @@ class ButtonView: UIView {
         
     }
     
-    
+    // MARK: - User Action
     @objc func didTappedButton() {
         if let didTapButton = didTapButton {
             didTapButton()

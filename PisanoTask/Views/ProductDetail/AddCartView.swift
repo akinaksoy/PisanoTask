@@ -8,24 +8,25 @@
 import UIKit
 
 class AddCartView: UIView {
-
+    // MARK: - UI Outlets
     let view : UIView = {
         let view = UIView(frame: .zero)
         view.backgroundColor = UIColor.setColor(.alternativeColor)
         return view
     }()
     
-    let totalKilogramLabel = UILabel(text: "Total KG :", fontSize: 16, fontColor: .textColor, fontTypes: .deffault)
+    let totalKilogramLabel = UILabel(text: Constants.totalKilogram, fontSize: 16, fontColor: .textColor, fontTypes: .deffault)
     let kilogramValueLabel = UILabel(text: "1 KG", fontSize: 16, fontColor: .textColor, fontTypes: .bold)
-    let priceLabel = UILabel(text: "Price : ", fontSize: 16, fontColor: .textColor, fontTypes: .deffault)
+    let priceLabel = UILabel(text: Constants.price, fontSize: 16, fontColor: .textColor, fontTypes: .deffault)
     let priceValueLabel = UILabel(text: "1 $", fontSize: 16, fontColor: .textColor, fontTypes: .bold)
    
     let addToCartButton : ButtonView = {
        let button = ButtonView()
-        button.configure(buttonText: "Add to Cart",icon: "cart.circle",type: .ButtonWithText)
+        button.configure(buttonText: Constants.addToCart,icon: "cart.circle",type: .ButtonWithText)
        return button
     }()
     
+    // MARK: - Init
     override init(frame: CGRect) {
         super.init(frame: .zero)
         

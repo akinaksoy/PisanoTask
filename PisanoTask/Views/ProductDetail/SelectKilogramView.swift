@@ -8,6 +8,7 @@
 import UIKit
 
 class SelectKilogramView : UIView {
+    // MARK: - UI Outlet
     let view : UIView = {
         let view = UIView(frame: .zero)
         view.backgroundColor = UIColor.setColor(.alternativeColor)
@@ -15,7 +16,7 @@ class SelectKilogramView : UIView {
         return view
     }()
     
-    let valueLabel = UILabel(text: "1 Kilogram", fontSize: 16, fontColor: .textColor, fontTypes: .deffault)
+    let valueLabel = UILabel(text: "1 \(Constants.kilogram)", fontSize: 16, fontColor: .textColor, fontTypes: .deffault)
     
     let minusButton : ButtonView = {
        let button = ButtonView()
@@ -28,7 +29,7 @@ class SelectKilogramView : UIView {
         button.configure(buttonText: "",icon: "plus",type: .ButtonWithoutText)
        return button
     }()
-    
+    // MARK: - Init
     override init(frame: CGRect) {
         super.init(frame: .zero)
         
@@ -64,7 +65,7 @@ class SelectKilogramView : UIView {
     }
     
     func configureLabel(value : String) {
-        valueLabel.text = value + " Kilogram"
+        valueLabel.text = value + " \(Constants.kilogram)"
     }
     
 }

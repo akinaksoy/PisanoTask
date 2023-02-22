@@ -17,7 +17,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         let navVC = UINavigationController(rootViewController: ProductListViewController())
         window.rootViewController = navVC
-
+        NetworkService.shared.startMonitoring()
         window.makeKeyAndVisible()
         self.window = window
     }

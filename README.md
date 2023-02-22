@@ -5,7 +5,7 @@
 
 ## Requirements
 
-- Deployment Target : iOS 15.4
+- Deployment Target : iOS 13.0
 - xCode Version : 13.3
 
 ## Technologies

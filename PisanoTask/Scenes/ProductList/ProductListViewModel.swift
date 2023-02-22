@@ -17,17 +17,23 @@ class ProductListViewModel {
     }
     
     internal func fetchProductList() {
-        ProductListManager.responseService(type: .list, method: .get) { products, error in
-            if let products = products {
-                self.productList = products
-                self.viewController?.displayProductList()
-            } else if let error = error {
-                self.viewController?.displayErrorMessage(errorMessage: error.rawValue)
+        if NetworkService.shared.networkConnection {
+            ProductListManager.responseService(type: .list, method: .get) { products, error in
+                if let products = products {
+                    self.productList = products
+                    self.viewController?.displayProductList()
+                } else if let error = error {
+                    self.viewController?.displayErrorMessage(errorMessage: error.rawValue)
+                }
             }
+        } else {
+            viewController?.displayErrorMessage(errorMessage: Constants.connectionProblem)
         }
+        
     }
     
     internal func fetchProduct(index : Int) {
+        if NetworkService.shared.networkConnection {
         if let productId = self.productList?.products[index].productID {
             ProductDetailManager.responseService(query: productId, type: .detail, method: .get) { product, error in
                 if let product = product {
@@ -36,6 +42,15 @@ class ProductListViewModel {
                     self.viewController?.displayErrorMessage(errorMessage: error.rawValue)
                 }
             }
+        }
+        } else {
+            viewController?.displayErrorMessage(errorMessage: Constants.connectionProblem)
+        }
+    }
+    
+    func checkProductList() {
+        if productList?.products.count ?? 0 < 1 {
+            fetchProductList()
         }
     }
     
