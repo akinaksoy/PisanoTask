@@ -9,7 +9,20 @@ import UIKit
 
 protocol ProductListPageDisplayLogic {
     func displayProductList()
-    func displayErrorMessage()
+    func displayEmptyView()
+    func displayLoadingView()
+    func displayErrorMessage(errorMessage : String)
+    func removeCollectionView()
+    func removeEmptyView()
+    func removeLoadingView()
+}
+
+protocol ProductListPageRouterLogic {
+    func navigateToProductDetailPage(model : Product)
+}
+
+protocol ProductListPageUserInteractions{
+    func didTappedTryAgainButton()
 }
 
 class ProductListViewController: BaseViewController {
@@ -25,18 +38,15 @@ class ProductListViewController: BaseViewController {
         collectionView.register(ProductListCollectionViewCell.self,forCellWithReuseIdentifier: ProductListCollectionViewCell.cellIdentifier)
        return collectionView
     }()
-    
+    var loadingView : LoadingView?
+    var emptyView : EmptyView?
     var viewModel : ProductListViewModel?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         viewModel = ProductListViewModel(viewController: self)
+        displayLoadingView()
         
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        configure(title: "Products")
     }
     
     override func configure(title: String) {
@@ -52,14 +62,55 @@ class ProductListViewController: BaseViewController {
 }
 
 extension ProductListViewController : ProductListPageDisplayLogic {
+    
     func displayProductList() {
+        removeCollectionView()
+        removeEmptyView()
+        configure(title: "Products")
         productCollectionView.reloadData()
+        removeLoadingView()
     }
     
-    func displayErrorMessage() {
-        // alertView
+    func displayEmptyView() {
+        removeCollectionView()
+        emptyView = EmptyView()
+        emptyView?.tryAgainButton.didTapButton = {
+            self.didTappedTryAgainButton()
+        }
+        guard let emptyView = emptyView else {return}
+        view.addSubview(emptyView)
+        emptyView.snp.makeConstraints { make in
+            make.edges.equalTo(view.safeAreaLayoutGuide)
+        }
     }
     
+    func displayErrorMessage(errorMessage : String) {
+        let alert = UIAlertController(title: "Connection Problem", message: errorMessage, preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "Click", style: UIAlertAction.Style.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+        displayEmptyView()
+    }
+    
+    func displayLoadingView() {
+        loadingView = LoadingView()
+        guard let loadingView = loadingView else {return}
+        view.addSubview(loadingView)
+        loadingView.snp.makeConstraints({ make in
+            make.edges.equalToSuperview()
+        })
+    }
+    func removeCollectionView() {
+        productCollectionView.removeFromSuperview()
+    }
+    
+    func removeEmptyView() {
+        emptyView?.removeFromSuperview()
+        emptyView = nil
+    }
+    func removeLoadingView() {
+        loadingView?.removeFromSuperview()
+        loadingView = nil
+    }
 }
 
 extension ProductListViewController : UICollectionViewDataSource {
@@ -70,17 +121,27 @@ extension ProductListViewController : UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductListCollectionViewCell.cellIdentifier , for: indexPath) as! ProductListCollectionViewCell
         guard let product = viewModel?.productList?.products[indexPath.row] else {return UICollectionViewCell()}
-        cell.setDatas(imageUrl: product.image, productName: product.name, productPrice: String(product.price))
+        cell.setDatas(model: product)
         return cell
     }
 }
 
 extension ProductListViewController : UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        viewModel?.fetchProduct(index: indexPath.row)
+    }
+}
+
+extension ProductListViewController : ProductListPageRouterLogic {
+    func navigateToProductDetailPage(model: Product) {
         let destinationVC = ProductDetailViewController()
-        guard let product = viewModel?.productList?.products[indexPath.row] else {return}
-        destinationVC.configureProductDatas(model: product)
+        destinationVC.configureProductDatas(model: model)
         navigationController?.pushViewController(destinationVC, animated: true)
     }
 }
 
+extension ProductListViewController : ProductListPageUserInteractions {
+    func didTappedTryAgainButton() {
+        viewModel?.fetchProductList()
+    }
+}

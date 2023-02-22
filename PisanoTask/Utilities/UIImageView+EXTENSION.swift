@@ -10,13 +10,6 @@ import UIKit
 
 extension UIImageView{
     
-    func setImage(imageUrl : String) {
-        DispatchQueue.main.async {
-            let imageURL = URL.init(string: imageUrl)
-            KF.url(imageURL).set(to: self)
-        }
-    }
-    
     static var setImageView : UIImageView {
        let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
@@ -24,4 +17,5 @@ extension UIImageView{
         imageView.backgroundColor = .clear
         return imageView
     }
+    
 }

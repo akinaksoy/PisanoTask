@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 class ProductDetailViewModel {
     
@@ -32,6 +33,15 @@ class ProductDetailViewModel {
     
     func setProductModel(product : Product){
         self.product = product
+        totalPrice = selectedKilogram * product.price
+    }
+    
+    func fetchImage(imageId : String, imageURL : String) {
+        ImageManager.shared.fetchImage(imageId: imageId, imageUrl: imageURL) { image in
+            if let image = image {
+                self.viewController?.displayImage(image: image)
+            }
+        }
     }
     
     func decraseKilogram() {

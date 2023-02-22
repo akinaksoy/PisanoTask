@@ -13,7 +13,11 @@ protocol ProductDetailDataStorageLogic{
 
 protocol ProductDetailDisplayLogic {
     func displayPage(model : Product?)
+    func displayImage(image : UIImage)
+    func displayLoadingView()
     func updateViews()
+    func closePage()
+    func removeLoadingView()
 }
 
 protocol ProductDetailUserInteractions{
@@ -25,7 +29,7 @@ protocol ProductDetailUserInteractions{
 class ProductDetailViewController: BaseViewController {
 
     
-    let productImage = UIImageView.setImageView
+    var productImage = UIImageView.setImageView
     let productNameLabel = UILabel(text: "", fontSize: 24, fontColor: .textColor, fontTypes: .bold)
     let lineView = UIView.setLineView
     let priceValueLabel = UILabel(text: "", fontSize: 24, fontColor: .textColor, fontTypes: .deffault)
@@ -49,6 +53,7 @@ class ProductDetailViewController: BaseViewController {
         }
         return view
     }()
+    var loadingView : LoadingView?
     
     var viewModel : ProductDetailViewModel?
     
@@ -60,6 +65,10 @@ class ProductDetailViewController: BaseViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         configure(title: viewModel?.product?.name ?? "")
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        closePage()
     }
     
     override func configure(title: String) {
@@ -136,21 +145,46 @@ extension ProductDetailViewController : ProductDetailUserInteractions {
 extension ProductDetailViewController : ProductDetailDataStorageLogic {
     func configureProductDatas(model: Product) {
         viewModel = ProductDetailViewModel(viewController: self)
+        displayLoadingView()
         viewModel?.setProductModel(product: model)
     }
 }
 
 extension ProductDetailViewController : ProductDetailDisplayLogic {
+    
     func displayPage(model: Product?) {
         guard let model = model else {return}
-        productImage.setImage(imageUrl: model.image)
+        viewModel?.fetchImage(imageId: model.productID, imageURL: model.image)
         productNameLabel.text = model.name
         priceValueLabel.text = "Price : \(model.price) $ /KG"
         addCartView.configureDatas(totalKilogram: "1", totalPrice: "\(model.price)")
     }
+    func displayImage(image: UIImage) {
+        productImage.image = image
+        removeLoadingView()
+    }
+    
     func updateViews() {
         guard let selectedKilogram = viewModel?.selectedKilogram,let totalPrice = viewModel?.totalPrice else {return}
         selectKilogramView.configureLabel(value: String(selectedKilogram))
         addCartView.configureDatas(totalKilogram: String(selectedKilogram), totalPrice: String(totalPrice))
+    }
+    
+    func displayLoadingView() {
+        loadingView = LoadingView()
+        guard let loadingView = loadingView else {return}
+        productImage.addSubview(loadingView)
+        loadingView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+    }
+    
+    func removeLoadingView() {
+        loadingView?.removeFromSuperview()
+        loadingView = nil
+    }
+    
+    func closePage() {
+        viewModel = nil
     }
 }

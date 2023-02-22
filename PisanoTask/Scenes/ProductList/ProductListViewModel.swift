@@ -22,7 +22,7 @@ class ProductListViewModel {
                 self.productList = products
                 self.viewController?.displayProductList()
             } else if let error = error {
-                // Show Error Popup
+                self.viewController?.displayErrorMessage(errorMessage: error.rawValue)
             }
         }
     }
@@ -31,9 +31,9 @@ class ProductListViewModel {
         if let productId = self.productList?.products[index].productID {
             ProductDetailManager.responseService(query: productId, type: .detail, method: .get) { product, error in
                 if let product = product {
-                    // Navigate Detail Page
+                    self.viewController?.navigateToProductDetailPage(model: product)
                 } else if let error = error {
-                    // show error popup
+                    self.viewController?.displayErrorMessage(errorMessage: error.rawValue)
                 }
             }
         }

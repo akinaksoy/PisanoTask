@@ -7,15 +7,17 @@
 
 import UIKit
 import SnapKit
+
+
 class ProductListCollectionViewCell: UICollectionViewCell {
     
     
     static let cellIdentifier = "ProductListCollectionViewCell"
     
-    let productImage = UIImageView.setImageView
+    var productImage = UIImageView.setImageView
     let productNameLabel = UILabel(text: "", fontSize: 16, fontColor: .textColor, fontTypes: .deffault)
     let productPriceLabel = UILabel(text: "", fontSize: 12, fontColor: .textColor, fontTypes: .bold)
-    
+    var loadingIndicator : LoadingView?
     override init(frame : CGRect){
         super.init(frame: frame)
         configure()
@@ -58,10 +60,34 @@ class ProductListCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    func setDatas(imageUrl : String, productName : String, productPrice: String) {
-        productNameLabel.text = productName
-        productPriceLabel.text = "\(productPrice) $ / KG"
-        productImage.setImage(imageUrl: imageUrl)
+    func setDatas(model : Product) {
+        productNameLabel.text = model.name
+        productPriceLabel.text = "\(model.price) $ / KG"
+        startImageLoading()
+        ImageManager.shared.fetchImage(imageId: model.productID, imageUrl: model.image) { image in
+            guard let image = image else {
+                return
+            }
+            self.stopImageLoading()
+            self.productImage.image = image
+        }
+    }
+    
+    func startImageLoading() {
+        loadingIndicator = LoadingView()
+        guard let loadingIndicator = loadingIndicator else {
+            return
+        }
+        productImage.addSubview(loadingIndicator)
+        
+        loadingIndicator.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+    }
+    
+    func stopImageLoading() {
+        loadingIndicator?.removeFromSuperview()
+        loadingIndicator = nil
     }
     
 }
