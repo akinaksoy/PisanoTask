@@ -6,13 +6,11 @@
 //
 
 import Foundation
-import Alamofire
 
 public class ProductListManager {
     
     class func responseService(type : NetworkConstants.Pages,
-                               method: HTTPMethod,
-                               encoding: ParameterEncoding = URLEncoding.default,
+                               method: NetworkConstants.HTTPMethods,
                                completion: @escaping (ProductList?,RequestError.ErrorTypes?) -> Void){
         let baseURL = NetworkConstants.baseUrl
         let pageType = type.rawValue
@@ -21,13 +19,19 @@ public class ProductListManager {
             return
         }
         
-        ApiService.ApiRequest(url, method: method, encoding: encoding) { responseData in
+        // Get Data from API and convert to Model.
+        ApiService.ApiRequest(url, method: method) { responseData in
             if let statusCode = responseData.response?.statusCode {
                 switch statusCode {
                 case 200:
                     if let response = responseData.data {
-                        let productList = try? JSONDecoder().decode(ProductList.self, from: response)
-                        completion(productList, nil)
+                        do {
+                            let productList = try JSONDecoder().decode(ProductList.self, from: response)
+                            completion(productList, nil)
+                        } catch {
+                            completion(nil,.NetworkError)
+                        }
+                        
                     }
                 default :
                     completion(nil,.NetworkError)

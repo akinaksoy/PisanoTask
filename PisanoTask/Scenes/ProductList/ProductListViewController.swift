@@ -7,24 +7,6 @@
 
 import UIKit
 
-protocol ProductListPageDisplayLogic {
-    func displayProductList()
-    func displayEmptyView()
-    func displayLoadingView()
-    func displayErrorMessage(errorMessage : String)
-    func removeCollectionView()
-    func removeEmptyView()
-    func removeLoadingView()
-}
-
-protocol ProductListPageRouterLogic {
-    func navigateToProductDetailPage(model : Product)
-}
-
-protocol ProductListPageUserInteractions{
-    func didTappedTryAgainButton()
-}
-
 class ProductListViewController: BaseViewController {
     // MARK: - UI Outlets
     private lazy var productCollectionView : UICollectionView = {
@@ -36,7 +18,7 @@ class ProductListViewController: BaseViewController {
         collectionView.dataSource = self
         collectionView.backgroundColor = .setColor(.backgroundColor)
         collectionView.register(ProductListCollectionViewCell.self,forCellWithReuseIdentifier: ProductListCollectionViewCell.cellIdentifier)
-       return collectionView
+        return collectionView
     }()
     var loadingView : LoadingView?
     var emptyView : EmptyView?
@@ -49,13 +31,13 @@ class ProductListViewController: BaseViewController {
         displayLoadingView()
         viewModel = ProductListViewModel(viewController: self)
         
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         
         configure(title: Constants.products)
         viewModel?.checkProductList()
+        productCollectionView.reloadData()
     }
     
     // MARK: - UI Configuration

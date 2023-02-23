@@ -6,23 +6,26 @@
 //
 
 import Foundation
-import Alamofire
 class ApiService {
     
     class func ApiRequest(_ url: URL,
-                          method: HTTPMethod,
-                          encoding: ParameterEncoding = URLEncoding.default,
-                          completion: @escaping (AFDataResponse<Data?>) -> Void) {
+                          method: NetworkConstants.HTTPMethods,
+                          completion: @escaping (RequestModel) -> Void) {
         
-        AF.request(url,
-                   method: method,
-                   parameters: nil,
-                   encoding: encoding,
-                   headers: nil,
-                   interceptor: nil) {$0.timeoutInterval = 2}
-            .response { (responseData) in
-            
-            completion(responseData)
-        }
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        
+        let session = URLSession.shared
+        let task = session.dataTask(with: request, completionHandler: { data, response, error -> Void in
+            guard let httpResponse = response as? HTTPURLResponse else { return }
+            DispatchQueue.main.async {
+                let requestModel = RequestModel(data: data, response: httpResponse, error: error)
+                completion(requestModel)
+            }
+        })
+        
+        task.resume()
     }
 }

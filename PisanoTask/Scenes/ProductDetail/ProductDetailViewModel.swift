@@ -35,11 +35,13 @@ class ProductDetailViewModel {
         self.product = product
         totalPrice = selectedKilogram * product.price
     }
-    
+    // Fetch Image and send to UI
     func fetchImage(imageId : String, imageURL : String) {
         ImageManager.shared.fetchImage(imageId: imageId, imageUrl: imageURL) { image in
             if let image = image {
-                self.viewController?.displayImage(image: image)
+                DispatchQueue.main.async {
+                    self.viewController?.displayImage(image: image)
+                }
             }
         }
     }

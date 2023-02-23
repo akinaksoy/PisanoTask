@@ -7,25 +7,6 @@
 
 import UIKit
 
-protocol ProductDetailDataStorageLogic{
-    func configureProductDatas(model : Product)
-}
-
-protocol ProductDetailDisplayLogic {
-    func displayPage(model : Product?)
-    func displayImage(image : UIImage)
-    func displayLoadingView()
-    func updateViews()
-    func closePage()
-    func removeLoadingView()
-}
-
-protocol ProductDetailUserInteractions{
-    func didTappedMinusButton()
-    func didTappedPlusButton()
-    func didTappedAddToCartButton()
-}
-
 class ProductDetailViewController: BaseViewController {
 
     // MARK: - UI Outlets

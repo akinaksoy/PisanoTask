@@ -21,7 +21,6 @@ class ProductListCollectionViewCell: UICollectionViewCell {
     // MARK: - Init
     override init(frame : CGRect){
         super.init(frame: frame)
-        configure()
     }
     
     required init(coder : NSCoder){
@@ -47,17 +46,19 @@ class ProductListCollectionViewCell: UICollectionViewCell {
         productImage.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.top.equalToSuperview().offset(8)
-            make.height.equalToSuperview().multipliedBy(0.5)
+            make.height.width.equalToSuperview().multipliedBy(0.5)
         }
         
         productNameLabel.snp.makeConstraints { make in
             make.top.equalTo(productImage.snp_bottomMargin).offset(16)
-            make.left.right.equalTo(productImage)
+            make.centerX.equalToSuperview()
+            make.width.equalToSuperview()
         }
         
         productPriceLabel.snp.makeConstraints { make in
             make.top.equalTo(productNameLabel.snp_bottomMargin).offset(8)
-            make.left.right.equalTo(productNameLabel)
+            make.centerX.equalToSuperview()
+            make.width.equalToSuperview()
         }
     }
     
@@ -70,8 +71,10 @@ class ProductListCollectionViewCell: UICollectionViewCell {
                 return
             }
             self.stopImageLoading()
+            
             self.productImage.image = image
         }
+        configure()
     }
     
     func startImageLoading() {

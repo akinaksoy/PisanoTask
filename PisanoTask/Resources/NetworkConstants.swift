@@ -16,6 +16,10 @@ struct NetworkConstants {
         case list = "/list"
         case detail = "/detail"
     }
+    
+    enum HTTPMethods : String{
+        case GET = "GET"
+    }
 }
 
 struct RequestError {

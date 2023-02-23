@@ -22,24 +22,24 @@ class ImageManager {
             return
         }
         
-        DispatchQueue.main.async {
-            guard let imageURL = URL.init(string: imageUrl) else {
-                completion(nil)
-                return
-            }
-            
-            let resource = ImageResource(downloadURL: imageURL)
-            KingfisherManager.shared.retrieveImage(with: resource) { result in
-                switch result {
-                case .success(let image) :
-                    imageView = image.image
+        
+        guard let imageURL = URL.init(string: imageUrl) else {
+            completion(nil)
+            return
+        }
+        
+        ApiService.ApiRequest(imageURL,method: .GET) { responseData in
+            if let data = responseData.data, responseData.error == nil {
+                DispatchQueue.main.async() {
+                    guard let image = UIImage(data: data) else  {return}
+                    imageView = image
                     self.cache.setObject(imageView, forKey: imageId as NSString)
                     completion(imageView)
-                case .failure(_) :
-                    completion(nil)
                 }
             }
-            
+            else {
+                completion(nil)
+            }
         }
     }
     

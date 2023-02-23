@@ -18,7 +18,7 @@ class ProductListViewModel {
     
     internal func fetchProductList() {
         if NetworkService.shared.networkConnection {
-            ProductListManager.responseService(type: .list, method: .get) { products, error in
+            ProductListManager.responseService(type: .list, method: .GET) { products, error in
                 if let products = products {
                     self.productList = products
                     self.viewController?.displayProductList()
@@ -34,15 +34,15 @@ class ProductListViewModel {
     
     internal func fetchProduct(index : Int) {
         if NetworkService.shared.networkConnection {
-        if let productId = self.productList?.products[index].productID {
-            ProductDetailManager.responseService(query: productId, type: .detail, method: .get) { product, error in
-                if let product = product {
-                    self.viewController?.navigateToProductDetailPage(model: product)
-                } else if let error = error {
-                    self.viewController?.displayErrorMessage(errorMessage: error.rawValue)
+            if let productId = self.productList?.products[index].productID {
+                ProductDetailManager.responseService(query: productId, type: .detail, method: .GET) { product, error in
+                    if let product = product {
+                        self.viewController?.navigateToProductDetailPage(model: product)
+                    } else if let error = error {
+                        self.viewController?.displayErrorMessage(errorMessage: error.rawValue)
+                    }
                 }
             }
-        }
         } else {
             viewController?.displayErrorMessage(errorMessage: Constants.connectionProblem)
         }

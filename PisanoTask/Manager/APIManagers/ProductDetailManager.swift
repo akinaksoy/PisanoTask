@@ -6,13 +6,11 @@
 //
 
 import Foundation
-import Alamofire
 public class ProductDetailManager {
     
     class func responseService(query : String,
                                type : NetworkConstants.Pages,
-                               method: HTTPMethod,
-                               encoding: ParameterEncoding = URLEncoding.default,
+                               method: NetworkConstants.HTTPMethods,
                                completion: @escaping (Product?,RequestError.ErrorTypes?) -> Void){
         let baseURL = NetworkConstants.baseUrl
         let queryKeyword = "/\(query)"
@@ -21,9 +19,9 @@ public class ProductDetailManager {
             completion(nil, .SomethingWentWrong)
             return
         }
-        
-        ApiService.ApiRequest(url, method: method, encoding: encoding) { responseData in
-            if let statusCode = responseData.response?.statusCode {
+        // Get Data from API and convert to Model.
+        ApiService.ApiRequest(url,method: .GET) { responseData in
+            if let statusCode = responseData.response?.statusCode{
                 switch statusCode {
                 case 200:
                     if let response = responseData.data {
